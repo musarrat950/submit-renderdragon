@@ -353,3 +353,4 @@ I can implement one of these options on request:
 - Can we make the image preview conditional? Yes. We can include `image: { url: file.url }` only if the extension is an image type.
 - Can we change the embed style? Yes. Modify the `embed` object (fields, color, footer, etc.).
 - How do we support multiple endpoints with different rules? Add more keys to `ourFileRouter` and use them on the client via `endpoint="yourEndpoint"`.
+.
