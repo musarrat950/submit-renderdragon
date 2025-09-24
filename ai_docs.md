@@ -264,7 +264,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 Use the official UploadThing client SDK, pointing it to your API and including headers.
 
-### JavaScript / TypeScript (Browser or Node)
+### API Endpoint Base
+
+- Production base URL: `https://submit-renderdragon.vercel.app`
+- UploadThing route path: `/api/uploadthing`
+- Full production endpoint: `https://submit-renderdragon.vercel.app/api/uploadthing`
+
+### Description Field
+
+Pass an optional description with your upload request via the `x-description` header. The server will include this description in the Discord upload embed. The value is trimmed to a maximum of 1024 characters.
+
+### Production — JavaScript / TypeScript (Browser or Node)
 
 ```ts
 import { uploadFiles } from "@uploadthing/client";
@@ -274,7 +284,7 @@ async function uploadViaPublicAPI(file, description) {
     (route) => route.fileUploader,
     { files: [file] },
     {
-      url: "https://your-domain.com/api/uploadthing", // replace with your deployment URL
+      url: "https://submit-renderdragon.vercel.app/api/uploadthing",
       headers: {
         "x-api-key": "HDBFGIDGJKFDBGIJFDJGBUHDFGOFNJLDOGHF",
         "x-description": description ?? "",
@@ -283,6 +293,30 @@ async function uploadViaPublicAPI(file, description) {
   );
 
   // res contains info about uploaded files from UploadThing
+  console.log(res);
+  return res;
+}
+```
+
+### Local Development — JavaScript / TypeScript (Browser or Node)
+
+```ts
+import { uploadFiles } from "@uploadthing/client";
+
+async function uploadViaLocalAPI(file, description) {
+  const res = await uploadFiles(
+    (route) => route.fileUploader,
+    { files: [file] },
+    {
+      url: "http://localhost:3000/api/uploadthing",
+      headers: {
+        // API key can be omitted for internal dev UI; include if testing partner integrations
+        "x-api-key": "HDBFGIDGJKFDBGIJFDJGBUHDFGOFNJLDOGHF",
+        "x-description": description ?? "",
+      },
+    }
+  );
+
   console.log(res);
   return res;
 }
@@ -353,4 +387,3 @@ I can implement one of these options on request:
 - Can we make the image preview conditional? Yes. We can include `image: { url: file.url }` only if the extension is an image type.
 - Can we change the embed style? Yes. Modify the `embed` object (fields, color, footer, etc.).
 - How do we support multiple endpoints with different rules? Add more keys to `ourFileRouter` and use them on the client via `endpoint="yourEndpoint"`.
-.
