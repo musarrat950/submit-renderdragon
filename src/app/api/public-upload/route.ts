@@ -84,10 +84,11 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ url, key, name, size }, { status: 200, headers: corsHeaders });
-  } catch (err: any) {
-    console.error("/api/public-upload error:", err);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("/api/public-upload error:", message);
     return NextResponse.json(
-      { error: "Unexpected error", details: String(err?.message || err) },
+      { error: "Unexpected error", details: message },
       { status: 500, headers: corsHeaders }
     );
   }

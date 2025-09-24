@@ -46,7 +46,6 @@ export const ourFileRouter = {
           const sizeKB = Math.max(1, Math.round((file.size ?? 0) / 1024));
           const timestamp = new Date().toISOString();
           const deleteAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-          const deleteAtISO = deleteAt.toISOString();
           const deleteAtUnix = Math.floor(deleteAt.getTime() / 1000);
 
           const embed = {
