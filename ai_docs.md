@@ -327,6 +327,53 @@ Notes:
 - If the `x-api-key` header is omitted, the request is treated as an internal upload (no key check). If present and incorrect, the upload is rejected.
 
 
+## Public API (no SDK required)
+
+For zero-setup integrations, a simple public endpoint accepts a multipart file upload and handles storage + Discord webhook for you. No UploadThing SDK or token is required on the client side.
+
+- Production endpoint: `POST https://submit-renderdragon.vercel.app/api/public-upload`
+- Local dev endpoint: `POST http://localhost:3000/api/public-upload`
+
+Form fields (multipart/form-data):
+- `file` (required): the file blob to upload
+- `description` (optional): a short description to include in the Discord embed (also accepted via `x-description` header)
+
+Response (200):
+```json
+{
+  "url": "https://utfs.io/f/...", 
+  "key": "...",
+  "name": "original-filename.ext",
+  "size": 123456
+}
+```
+
+### cURL — Production
+
+```bash
+curl -X POST \
+  "https://submit-renderdragon.vercel.app/api/public-upload" \
+  -H "Accept: application/json" \
+  -F "file=@/path/to/your-file.ext" \
+  -F "description=Optional description shown in Discord"
+```
+
+### cURL — Local development
+
+```bash
+curl -X POST \
+  "http://localhost:3000/api/public-upload" \
+  -H "Accept: application/json" \
+  -F "file=@/path/to/your-file.ext" \
+  -F "description=Testing from local"
+```
+
+Notes:
+- The server posts a Discord webhook embed containing the file link, extension, size, upload time, and a scheduled deletion time (+24h). The optional description will appear as a field in the embed.
+- File type/size restrictions are not enforced at the API layer here; effective limits come from your hosting and UploadThing plan.
+- CORS is enabled for this route in `vercel.json` so you can call it from browsers on other origins.
+
+
 ## Discord Webhook Messages
 
 On successful upload, the server posts an embed to your Discord webhook that includes:
